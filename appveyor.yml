@@ -74,6 +74,24 @@ build_script:
 after_build:
 - scons -j%NUMBER_OF_PROCESSORS% MSVC_VERSION=12.0 llvm=1 check
 
+artifacts:
+  - path: '**\*.lib'
+    name: compiler
+
+  - path: '**\*.dll'
+    name: lib
+
+
+deploy:
+  description: 'release created by AppVeyor CI'
+  provider: GitHub
+  auth_token: '%GitHub_auth_token%'
+  artifact: compiler,lib
+  draft: true
+  prerelease: true
+  on:
+    appveyor_repo_tag: true # deploy on tag push only
+    configuration: Release  # Debug contains non-redist MS DLLs
 
 # It's possible to setup notification here, as described in
 # http://www.appveyor.com/docs/notifications#appveyor-yml-configuration , but
